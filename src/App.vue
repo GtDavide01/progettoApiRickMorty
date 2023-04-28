@@ -6,26 +6,31 @@ export default {
       listCharacters: [],
       currentPage: 1,
       totalPages: 0,
-      inputUser: ""
+      inputUser: "",
+      selectedStatus: ''
     };
   },
   methods: {
     getUserCharacter() {
-      axios
-        .get(`https://rickandmortyapi.com/api/character/?name=${this.inputUser}`)
-        .then(resp => {
-          this.listCharacters = resp.data.results;
-          this.totalPages = resp.data.info.pages;
-        });
-    },
-    getListCharacters() {
-      axios
-        .get(`https://rickandmortyapi.com/api/character?name=${this.inputUser}&page=${this.currentPage}`)
-        .then(resp => {
-          this.listCharacters = resp.data.results;
-          this.totalPages = resp.data.info.pages;
-        });
-    },
+    let url = `https://rickandmortyapi.com/api/character/?name=${this.inputUser}`;
+    if (this.selectedStatus) {
+      url += `&status=${this.selectedStatus}`;
+    }
+    axios.get(url).then(resp => {
+      this.listCharacters = resp.data.results;
+      this.totalPages = resp.data.info.pages;
+    });
+  },
+  getListCharacters() {
+    let url = `https://rickandmortyapi.com/api/character?name=${this.inputUser}&page=${this.currentPage}`;
+    if (this.selectedStatus) {
+      url += `&status=${this.selectedStatus}`;
+    }
+    axios.get(url).then(resp => {
+      this.listCharacters = resp.data.results;
+      this.totalPages = resp.data.info.pages;
+    });
+  },
     nextPage() {
       if (this.currentPage < this.totalPages) {
         this.currentPage++;
@@ -48,8 +53,13 @@ export default {
   <header>
     <h1>Rick and Morty Api</h1>
     <div class="input">
-      <input type="text" v-model="inputUser">
+      <input type="text" v-model="inputUser" @keyup.enter="getUserCharacter">
       <button @click="getUserCharacter">Cerca</button>
+      <select v-model="selectedStatus">
+        <option value="">Tutti</option>
+        <option value="alive">Vivo</option>
+        <option value="dead">Morto</option>
+      </select>
   </div>
   <nav aria-label="Page navigation example">
       <ul class="pagination">
@@ -114,6 +124,13 @@ export default {
           }
           button{
             padding: 5px;
+            border-radius: 0.5rem;
+            border: 1px solid lightgreen;
+            background-color: lightblue;
+          }
+          select {
+            padding: 7px;
+            margin-left : 15px;
             border-radius: 0.5rem;
             border: 1px solid lightgreen;
             background-color: lightblue;
