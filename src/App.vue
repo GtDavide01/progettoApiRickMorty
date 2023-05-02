@@ -7,7 +7,8 @@ export default {
       currentPage: 1,
       totalPages: 0,
       inputUser: "",
-      selectedStatus: ''
+      selectedStatus: '',
+      selectedSpecies: ''
     };
   },
   methods: {
@@ -15,6 +16,9 @@ export default {
     let url = `https://rickandmortyapi.com/api/character/?name=${this.inputUser}`;
     if (this.selectedStatus) {
       url += `&status=${this.selectedStatus}`;
+    }
+    if (this.selectedSpecies) { // Aggiungi la selezione della specie all'URL solo se è stata selezionata
+      url += `&species=${this.selectedSpecies}`;
     }
     axios.get(url).then(resp => {
       this.listCharacters = resp.data.results;
@@ -25,6 +29,9 @@ export default {
     let url = `https://rickandmortyapi.com/api/character?name=${this.inputUser}&page=${this.currentPage}`;
     if (this.selectedStatus) {
       url += `&status=${this.selectedStatus}`;
+    }
+    if (this.selectedSpecies) { // Aggiungi la selezione della specie all'URL solo se è stata selezionata
+      url += `&species=${this.selectedSpecies}`;
     }
     axios.get(url).then(resp => {
       this.listCharacters = resp.data.results;
@@ -56,9 +63,20 @@ export default {
       <input type="text" v-model="inputUser" @keyup.enter="getUserCharacter">
       <button @click="getUserCharacter">Cerca</button>
       <select v-model="selectedStatus">
-        <option value="">Tutti</option>
+        <option value="">Stato</option>
         <option value="alive">Vivo</option>
         <option value="dead">Morto</option>
+      </select>
+      <select v-model="selectedSpecies">
+        <option value="">Specie</option>
+        <option value="human">Umano</option>
+        <option value="humanoid">Umanoide</option>
+        <option value="alien">Alieno</option>
+        <option value="animal">Animale</option>
+        <option value="mythological creature">Creatura mitologica</option>
+        <option value="cronenberg">Cronenberg</option>
+        <option value="disease">Virus</option>
+        <option value="robot">Robot</option>
       </select>
   </div>
   <nav aria-label="Page navigation example">
